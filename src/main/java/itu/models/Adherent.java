@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "adherent")
 public class Adherent {
@@ -32,9 +34,11 @@ public class Adherent {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_profil", nullable = false)
+    @JsonManagedReference
     private Profil profil;
 
-        @OneToOne(mappedBy = "adherent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "adherent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private AdherentQuota quota;
 
 
@@ -44,6 +48,7 @@ public class Adherent {
 
 
     @OneToMany(mappedBy = "adherent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Penalite> penalites;
 
     // Constructeurs
