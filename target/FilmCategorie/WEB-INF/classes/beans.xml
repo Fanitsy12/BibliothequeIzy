@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="itu"/>
+
+    <jpa:repositories base-package="itu.repositories"/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+   <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+    <property name="driverClassName" value="org.postgresql.Driver"/>
+    <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/biblio"/>
+    <property name="username" value="postgres"/>
+    <property name="password" value="postgres"/>
+    <property name="maximumPoolSize" value="10"/>
+    <property name="connectionTimeout" value="30000"/>
+    <property name="idleTimeout" value="600000"/>
+    <property name="maxLifetime" value="1800000"/>
+    <!-- Propriétés spécifiques à PostgreSQL -->
+    <property name="connectionTestQuery" value="SELECT 1"/>
+    <property name="dataSourceProperties">
+        <props>
+            <prop key="preparedStatementCacheQueries">256</prop>
+            <prop key="preparedStatementCacheSizeMiB">5</prop>
+            <prop key="tcpKeepAlive">true</prop>
+        </props>
+    </property>
+</bean>
+
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="itu.models"/>
+        <property name="persistenceUnitName" value="default"/>
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL8Dialect"/>
+                <property name="showSql" value="true"/>
+                <property name="generateDdl" value="true"/>
+            </bean>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+        <property name="entityManagerFactoryInterface" value="javax.persistence.EntityManagerFactory"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+</beans>

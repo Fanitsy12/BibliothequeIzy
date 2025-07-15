@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schéma Base de Données Bibliothèque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .schema-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: linear-gradient(45deg, #f9f9f9 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f9f9f9 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f9f9f9 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f9f9f9 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .table {
+            position: absolute;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            min-width: 180px;
+            font-size: 11px;
+        }
+        .table-header {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+        }
+        .table-body {
+            padding: 8px;
+        }
+        .field {
+            margin: 2px 0;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .pk {
+            background: #ffe6e6;
+            color: #d63384;
+            font-weight: bold;
+        }
+        .fk {
+            background: #e6f3ff;
+            color: #0066cc;
+        }
+        .normal {
+            background: #f8f9fa;
+            color: #333;
+        }
+        .connection {
+            position: absolute;
+            stroke: #666;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        .connection-fk {
+            stroke: #0066cc;
+            stroke-dasharray: 5,5;
+        }
+        .legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 3px 0;
+        }
+        .legend-color {
+            width: 15px;
+            height: 10px;
+            margin-right: 5px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Schéma Base de Données Bibliothèque</h1>
+        
+        <div class="schema-container">
+            <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+                    </marker>
+                </defs>
+                
+                <!-- Connexions Foreign Keys -->
+                <!-- Adherent -> Profil -->
+                <path class="connection connection-fk" d="M 200 120 Q 300 80 400 80 Q 500 80 600 120"/>
+                
+                <!-- Abonnement -> Adherent -->
+                <path class="connection connection-fk" d="M 80 250 Q 120 200 150 150"/>
+                
+                <!-- Pret -> Adherent -->
+                <path class="connection connection-fk" d="M 400 300 Q 350 250 280 200"/>
+                
+                <!-- Pret -> ExemplaireLivre -->
+                <path class="connection connection-fk" d="M 500 320 Q 600 350 700 380"/>
+                
+                <!-- ExemplaireLivre -> Livre -->
+                <path class="connection connection-fk" d="M 750 450 Q 800 500 850 550"/>
+                
+                <!-- Livre -> TypeLivre -->
+                <path class="connection connection-fk" d="M 950 600 Q 1000 650 1050 700"/>
+                
+                <!-- LivreCategorie -> Livre -->
+                <path class="connection connection-fk" d="M 700 650 Q 750 600 800 580"/>
+                
+                <!-- LivreCategorie -> CategorieLivre -->
+                <path class="connection connection-fk" d="M 650 680 Q 600 720 550 750"/>
+                
+                <!-- Penalite -> Adherent -->
+                <path class="connection connection-fk" d="M 200 450 Q 150 350 150 250"/>
+                
+                <!-- Penalite -> Pret -->
+                <path class="connection connection-fk" d="M 300 450 Q 350 400 400 350"/>
+                
+                <!-- Reservation -> Adherent -->
+                <path class="connection connection-fk" d="M 100 600 Q 80 500 100 400 Q 120 300 150 200"/>
+                
+                <!-- Reservation -> Livre -->
+                <path class="connection connection-fk" d="M 200 650 Q 400 700 600 650 Q 800 600 850 580"/>
+                
+                <!-- Users -> Profil -->
+                <path class="connection connection-fk" d="M 1200 150 Q 1100 100 1000 80 Q 800 60 700 100"/>
+                
+                <!-- Pret_Prolongement -> Pret -->
+                <path class="connection connection-fk" d="M 600 400 Q 550 380 500 360"/>
+            </svg>
+            
+            <!-- Table Profil -->
+            <div class="table" style="top: 80px; left: 600px;">
+                <div class="table-header">🔑 Profil</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 Id_Profil (PK)</div>
+                    <div class="field normal">Nom_Profil</div>
+                    <div class="field normal">Quota_maxSurPlace</div>
+                    <div class="field normal">Quota_maxEmprunter</div>
+                    <div class="field normal">Duree_pret</div>
+                    <div class="field normal">Duree_penalite</div>
+                </div>
+            </div>
+
+            <!-- Table Adherent -->
+            <div class="table" style="top: 120px; left: 150px;">
+                <div class="table-header">👤 Adherent</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdAdherent (PK)</div>
+                    <div class="field normal">Nom</div>
+                    <div class="field normal">Prenom</div>
+                    <div class="field normal">DateNaissance</div>
+                    <div class="field normal">Email</div>
+                    <div class="field normal">MotDePasse</div>
+                    <div class="field normal">Date_inscription</div>
+                    <div class="field fk">🔗 Id_Profil (FK)</div>
+                </div>
+            </div>
+
+            <!-- Table Abonnement -->
+            <div class="table" style="top: 240px; left: 20px;">
+                <div class="table-header">💳 Abonnement</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdAbonnement (PK)</div>
+                    <div class="field fk">🔗 IdAdherent (FK)</div>
+                    <div class="field normal">Datedebut</div>
+                    <div class="field normal">DateFin</div>
+                    <div class="field normal">Montant</div>
+                </div>
+            </div>
+
+            <!-- Table TypeLivre -->
+            <div class="table" style="top: 680px; left: 1050px;">
+                <div class="table-header">📑 TypeLivre</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdTypeLivre (PK)</div>
+                    <div class="field normal">Type</div>
+                </div>
+            </div>
+
+            <!-- Table Livre -->
+            <div class="table" style="top: 550px; left: 800px;">
+                <div class="table-header">📚 Livre</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdLivre (PK)</div>
+                    <div class="field normal">Titre</div>
+                    <div class="field normal">Auteur</div>
+                    <div class="field normal">DateEdition</div>
+                    <div class="field fk">🔗 IdTypeLivre (FK)</div>
+                    <div class="field normal">Status</div>
+                    <div class="field normal">restriction_age</div>
+                </div>
+            </div>
+
+            <!-- Table ExemplaireLivre -->
+            <div class="table" style="top: 380px; left: 700px;">
+                <div class="table-header">📖 ExemplaireLivre</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdExemplaireLivre (PK)</div>
+                    <div class="field fk">🔗 IdLivre (FK)</div>
+                    <div class="field normal">CodeBarre</div>
+                    <div class="field normal">DateAcquisition</div>
+                    <div class="field normal">Etat</div>
+                    <div class="field normal">Status</div>
+                </div>
+            </div>
+
+            <!-- Table Pret -->
+            <div class="table" style="top: 300px; left: 400px;">
+                <div class="table-header">📤 Pret</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdPret (PK)</div>
+                    <div class="field normal">TypePret</div>
+                    <div class="field normal">Date_emprunt</div>
+                    <div class="field normal">Date_rendu</div>
+                    <div class="field normal">Date_rendu_prevue</div>
+                    <div class="field normal">is_prolonged</div>
+                    <div class="field fk">🔗 IdAdherent (FK)</div>
+                    <div class="field fk">🔗 IdExemplaireLivre (FK)</div>
+                </div>
+            </div>
+
+            <!-- Table CategorieLivre -->
+            <div class="table" style="top: 730px; left: 450px;">
+                <div class="table-header">🏷️ CategorieLivre</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdCatLivre (PK)</div>
+                    <div class="field normal">Categorie</div>
+                </div>
+            </div>
+
+            <!-- Table LivreCategorie -->
+            <div class="table" style="top: 650px; left: 600px;">
+                <div class="table-header">🔗 LivreCategorie</div>
+                <div class="table-body">
+                    <div class="field fk">🔗 IdCatLivre (FK)</div>
+                    <div class="field fk">🔗 IdLivre (FK)</div>
+                </div>
+            </div>
+
+            <!-- Table Penalite -->
+            <div class="table" style="top: 450px; left: 150px;">
+                <div class="table-header">⚠️ Penalite</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdPenalite (PK)</div>
+                    <div class="field fk">🔗 IdAdherent (FK)</div>
+                    <div class="field fk">🔗 IdPret (FK)</div>
+                    <div class="field normal">DateDebutPenalite</div>
+                    <div class="field normal">DatelevePenalite</div>
+                    <div class="field normal">Leve</div>
+                </div>
+            </div>
+
+            <!-- Table Reservation -->
+            <div class="table" style="top: 600px; left: 50px;">
+                <div class="table-header">📋 Reservation</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 idReservation (PK)</div>
+                    <div class="field fk">🔗 idAdherent (FK)</div>
+                    <div class="field fk">🔗 idLivre (FK)</div>
+                    <div class="field fk">🔗 idExemplaireLivre (FK)</div>
+                    <div class="field normal">date_reservation</div>
+                    <div class="field normal">date_debut_reservation</div>
+                    <div class="field normal">date_fin_reservation</div>
+                    <div class="field normal">isApproved</div>
+                </div>
+            </div>
+
+            <!-- Table Users -->
+            <div class="table" style="top: 120px; left: 1150px;">
+                <div class="table-header">👥 Users</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 IdUser (PK)</div>
+                    <div class="field normal">Nom</div>
+                    <div class="field normal">Prenom</div>
+                    <div class="field normal">Mdp</div>
+                    <div class="field normal">Email</div>
+                    <div class="field normal">DateNaissance</div>
+                    <div class="field fk">🔗 Id_Profil (FK)</div>
+                </div>
+            </div>
+
+            <!-- Table adherent_quota -->
+            <div class="table" style="top: 350px; left: 20px;">
+                <div class="table-header">📊 adherent_quota</div>
+                <div class="table-body">
+                    <div class="field fk">🔗 id_adherent (FK)</div>
+                    <div class="field normal">quota_surplace</div>
+                    <div class="field normal">quota_emprunter</div>
+                </div>
+            </div>
+
+            <!-- Table Pret_Prolongement -->
+            <div class="table" style="top: 400px; left: 600px;">
+                <div class="table-header">⏰ Pret_Prolongement</div>
+                <div class="table-body">
+                    <div class="field pk">🔑 idProlongement (PK)</div>
+                    <div class="field fk">🔗 idPret (FK)</div>
+                    <div class="field normal">jour_prolongement</div>
+                    <div class="field normal">est_valide</div>
+                </div>
+            </div>
+
+            <!-- Légende -->
+            <div class="legend">
+                <div style="font-weight: bold; margin-bottom: 5px;">Légende:</div>
+                <div class="legend-item">
+                    <div class="legend-color pk"></div>
+                    <span>🔑 Clé Primaire (PK)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color fk"></div>
+                    <span>🔗 Clé Étrangère (FK)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color normal"></div>
+                    <span>Champ Normal</span>
+                </div>
+                <div style="margin-top: 5px; font-size: 9px;">
+                    <div>—— Relation FK</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
