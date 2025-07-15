@@ -1,0 +1,26 @@
+Sub Create_Tables()
+
+DoCmd.RunSQL "CREATE TABLE Profil(" & _
+   "Id_Profil INT," & _
+   "Nom_Profil VARCHAR(50) NOT NULL," & _
+   "Quota_maxSurPlace INT NOT NULL," & _
+   "Quota_maxEmprunter INT," & _
+   "Duree_pret INT NOT NULL," & _
+   "Duree_penalite INT," & _
+   "PRIMARY KEY(Id_Profil)" & _
+");"   
+
+DoCmd.RunSQL "CREATE TABLE Adherent(" & _
+   "IdAdherent INT," & _
+   "Nom VARCHAR(50) NOT NULL," & _
+   "Prenom VARCHAR(50)," & _
+   "DateNaissance DATE," & _
+   "Email VARCHAR(50)," & _
+   "MotDePasse VARCHAR(50)," & _
+   "Date_inscription DATE NOT NULL," & _
+   "Id_Profil INT NOT NULL," & _
+   "PRIMARY KEY(IdAdherent)," & _
+   "FOREIGN KEY(Id_Profil) REFERENCES Profil(Id_Profil)" & _
+");"   
+
+End Sub
