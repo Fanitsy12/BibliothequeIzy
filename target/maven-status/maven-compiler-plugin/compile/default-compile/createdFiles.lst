@@ -4,6 +4,7 @@ itu\services\AbonnementService.class
 itu\services\ReservationService.class
 itu\controllers\LivreController.class
 itu\services\PretService.class
+.DS_Store
 itu\repositories\ProfilRepository.class
 itu\models\PretProlongement.class
 itu\services\LivreService.class
@@ -23,6 +24,7 @@ itu\models\Type.class
 itu\models\Pret.class
 itu\repositories\ExemplaireLivreRepository.class
 itu\repositories\CategorieLivreRepository.class
+itu\.DS_Store
 itu\repositories\PenaliteRepository.class
 itu\services\AdherentService.class
 itu\services\ProfilService.class

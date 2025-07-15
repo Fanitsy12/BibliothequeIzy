@@ -32,6 +32,7 @@ boolean isAbonneAlaDate(
         @Param("adherent") Adherent adherent,
         @Param("datePret") LocalDate datePret);   
         
-        Abonnement findTopByAdherentIdOrderByDateFinDesc(Long idAdherent);
+        Abonnement findTopByAdherentOrderByDateFinDesc(Adherent adherent);
+
 
 }
