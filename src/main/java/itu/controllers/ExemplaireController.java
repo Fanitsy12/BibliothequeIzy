@@ -22,9 +22,16 @@ public class ExemplaireController {
 
     @Autowired
     private LivreService livreService;
+ @Autowired
     private AdherentRepository adherentRepository;
+
+    // Autres injections
+    @Autowired
     private AbonnementRepository abonnementRepository;
+
+    @Autowired
     private PenaliteRepository penaliteRepository;
+
 
 
 
@@ -70,7 +77,7 @@ public ResponseEntity<?> getInfosAdherent(@PathVariable Long id) {
     }
 
     // Dernier abonnement actif (optionnel, à adapter selon ton service)
-    Abonnement dernierAbonnement = abonnementRepository.findTopByAdherentIdOrderByDateFinDesc(id);
+    Abonnement dernierAbonnement = abonnementRepository.findTopByAdherentOrderByDateFinDesc(adherent);
     if (dernierAbonnement != null) {
         Map<String, Object> abo = new HashMap<>();
         abo.put("dateDebut", dernierAbonnement.getDateDebut());
@@ -81,7 +88,7 @@ public ResponseEntity<?> getInfosAdherent(@PathVariable Long id) {
     }
 
     // Pénalités actives
-    List<Penalite> penalites = penaliteRepository.findByAdherentIdAndLeveFalse(id);
+    List<Penalite> penalites = penaliteRepository.findByAdherentIdAdherentAndLeveFalse(id);
     List<Map<String, Object>> penalitesJson = penalites.stream().map(p -> {
         Map<String, Object> pen = new HashMap<>();
         pen.put("dateDebut", p.getDateDebutPenalite());

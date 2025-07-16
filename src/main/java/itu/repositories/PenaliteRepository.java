@@ -20,6 +20,7 @@ public interface PenaliteRepository extends JpaRepository<Penalite, Long> {
 int countAdherentsPenalises(@Param("mois") int mois, @Param("annee") int annee);
 
 
- List<Penalite> findByAdherentIdAndLeveFalse(Long idAdherent);
+List<Penalite> findByAdherentIdAdherentAndLeveFalse(Long idAdherent);
+
 
 }

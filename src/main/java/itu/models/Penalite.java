@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "Penalite")
@@ -22,11 +23,14 @@ public class Penalite {
     @JoinColumn(name = "IdPret")
     private Pret pret;
 
-    @Column(name = "DateDebutPenalite", nullable = false)
-    private LocalDate dateDebutPenalite = LocalDate.now();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+@Column(name = "DateDebutPenalite", nullable = false)
+private LocalDate dateDebutPenalite;
 
-    @Column(name = "DatelevePenalite", nullable = false)
-    private LocalDate datelevePenalite = LocalDate.now();
+@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+@Column(name = "DatelevePenalite", nullable = false)
+private LocalDate datelevePenalite;
+
 
     @Column(name = "Leve")
     private Boolean leve = false;
